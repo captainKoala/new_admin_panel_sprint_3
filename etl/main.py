@@ -26,6 +26,7 @@ def create_schema(url: str, name: str, schema: str):
 
 
 if __name__ == '__main__':
-    with open('test.json') as f:
-        schema = f.read()
-    create_schema(f'{ETL_BASE_URL}:{ETL_PORT}/', INDEX_NAME, schema)
+    from time import sleep
+    while True:
+        logger.debug('alive...')
+        sleep(2)

@@ -7,6 +7,7 @@ authors = ["captainKoala"]
 [tool.poetry.dependencies]
 python = "^3.10"
 requests = "^2.28.0"
+psycopg2-binary = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 
