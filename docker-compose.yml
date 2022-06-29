@@ -2,6 +2,8 @@ version: '3'
 volumes:
   postgres_data:
     name: ${CONTAINER_PREFIX}postgres_data
+  es_data:
+    name: ${CONTAINER_PREFIX}es
   static_value:
     name: ${CONTAINER_PREFIX}static_value
   media_value:
@@ -15,6 +17,21 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
+    restart: always
+
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+    expose:
+      - "9200"
+    volumes:
+      - es_data
+    restart: always
+    ports:
+      - "9200:9200"
 
   backend:
     build: ./backend
@@ -29,7 +46,6 @@ services:
       - static_value:/static/
       - media_value:/media/
     restart: always
-
 
   nginx:
     image: nginx:latest
