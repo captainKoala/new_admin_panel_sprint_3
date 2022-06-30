@@ -20,4 +20,4 @@ RUN poetry config virtualenvs.create false  \
 
 COPY . .
 
-RUN python main.py
+CMD ["python", "main.py"]
