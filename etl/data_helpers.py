@@ -1,48 +1,78 @@
+from datetime import datetime
 from dataclasses import dataclass, field
-import uuid
+from uuid import UUID, uuid4
+from pydantic import BaseModel, Field, root_validator
 
 
-@dataclass
-class FilmworkData:
+class PersonData(BaseModel):
+    person_id: UUID
+    person_name: str
+    person_role: str
+
+
+class FilmworkData(BaseModel):
+    id: UUID
+    rating: float = Field(alias='imdb_rating', default=0.0)
+    genre: str
     title: str
     description: str
-    creation_date: str  # ToDo: maybe datetime ???
-    type: str  # ToDo: maybe ENUM ???
-    created: str  # ToDo: maybe datetime ???
-    modified: str  # ToDo: maybe datetime ???
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
-    rating: float = field(default=0.0)
+    persons: list[PersonData]
 
+    @root_validator
+    @classmethod
+    def compute_persons(cls, values: dict) -> dict:
+        if 'persons' in values:
+            persons = values['persons']
 
-@dataclass
-class GenreData:
-    name: str
-    description: str
-    created: str  # ToDo: maybe datetime ???
-    modified: str  # ToDo: maybe datetime ???
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
+            director_names = [p.person_name for p in persons if p.person_role == 'director']
+            values['director'] = ', '.join(director_names)
 
+            writers = [p for p in persons if p.person_role == 'writer']
+            values['writers_names'] = ', '.join([a.person_name for a in writers])
+            values['writers'] = writers
 
-@dataclass
-class GenreFilmworkData:
-    film_work_id: uuid
-    genre_id: uuid
-    created: str  # ToDo: maybe datetime ???
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
+            actors = [p for p in persons if p.person_role == 'actor']
+            values['actors_names'] = ', '.join([a.person_name for a in actors])
+            values['actors'] = actors
+        return values
 
+# print(f1.json(exclude={'persons': True, 'actors': {'__all__': {'person_role'}}}))
 
-@dataclass
-class PersonFilmworkData:
-    film_work_id: uuid
-    person_id: uuid
-    role: str
-    created: str  # ToDo: maybe datetime ???
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
+    # creation_date: datetime | None
+    # type: str
+    # created: datetime
+    # modified: datetime
 
-
-@dataclass
-class PersonData:
-    full_name: str
-    created: str  # ToDo: maybe datetime ???
-    modified: str  # ToDo: maybe datetime ???
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
+#
+# @dataclass
+# class GenreData:
+#     name: str
+#     description: str
+#     created: str  # ToDo: maybe datetime ???
+#     modified: str  # ToDo: maybe datetime ???
+#     id: uuid.UUID = field(default_factory=uuid.uuid4)
+#
+#
+# @dataclass
+# class GenreFilmworkData:
+#     film_work_id: uuid
+#     genre_id: uuid
+#     created: str  # ToDo: maybe datetime ???
+#     id: uuid.UUID = field(default_factory=uuid.uuid4)
+#
+#
+# @dataclass
+# class PersonFilmworkData:
+#     film_work_id: uuid
+#     person_id: uuid
+#     role: str
+#     created: str  # ToDo: maybe datetime ???
+#     id: uuid.UUID = field(default_factory=uuid.uuid4)
+#
+#
+# @dataclass
+# class PersonData:
+#     full_name: str
+#     created: str  # ToDo: maybe datetime ???
+#     modified: str  # ToDo: maybe datetime ???
+#     id: uuid.UUID = field(default_factory=uuid.uuid4)

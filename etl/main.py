@@ -8,7 +8,7 @@ from time import sleep
 
 import requests
 import psycopg2
-from psycopg2.extras import DictCursor
+from psycopg2.extras import RealDictCursor
 
 from pg_extractor import PostgresExtractor
 from settings import Settings
@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 
 BASE_DIR = Path(__file__).resolve().parent
 
-INDEX_NAME = 'table'
+INDEX_NAME = 'movies'
 ETL_BASE_URL = 'http://es'
 ETL_PORT = '9200'
 
@@ -65,6 +65,10 @@ def create_schema(url: str, name: str, schema: str):
     response = requests.put(url+name, data=schema, headers={'Content-Type': 'application/json'})
     logger.debug(response.json())
 
+from data_helpers import FilmworkData
+def es_update_movies(film_works: list[FilmworkData]) -> None:
+    line_header = '{{"index": {{"_index": "{}", "_id": "{}"}}}}'
+
 
 if __name__ == '__main__':
     with open(ETL_SCHEMA_FILE) as f:
@@ -77,11 +81,12 @@ if __name__ == '__main__':
         'host': Settings().postgres_host,
         'port': Settings().postgres_port,
     }
-    create_schema(f'{ETL_BASE_URL}:{ETL_PORT}/', INDEX_NAME, schema)
+    # create_schema(f'{ETL_BASE_URL}:{ETL_PORT}/', INDEX_NAME, schema)
 
-    with psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
+    logger.debug('Connect to Postgres')
+    with psycopg2.connect(**dsl, cursor_factory=RealDictCursor) as pg_conn:
         pg_extractor = PostgresExtractor(pg_conn, logger)
-        pg_extractor.get_movies()
+        movies = pg_extractor.get_movies()
 
     counter = 1
 
