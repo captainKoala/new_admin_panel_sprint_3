@@ -13,7 +13,7 @@ class PersonData(BaseModel):
 class FilmworkData(BaseModel):
     id: UUID
     rating: float = Field(alias='imdb_rating', default=0.0)
-    genre: str
+    genres: list[str]
     title: str
     description: str
     persons: list[PersonData]
@@ -22,7 +22,7 @@ class FilmworkData(BaseModel):
     @classmethod
     def compute_persons(cls, values: dict) -> dict:
         if 'persons' in values:
-            persons = values['persons']
+            persons = values.get('persons', [])
 
             director_names = [p.person_name for p in persons if p.person_role == 'director']
             values['director'] = ', '.join(director_names)
@@ -34,6 +34,8 @@ class FilmworkData(BaseModel):
             actors = [p for p in persons if p.person_role == 'actor']
             values['actors_names'] = ', '.join([a.person_name for a in actors])
             values['actors'] = actors
+        if 'genres' in values:
+            values['genre'] = ', '.join(values.get('genres', []))
         return values
 
 # print(f1.json(exclude={'persons': True, 'actors': {'__all__': {'person_role'}}}))

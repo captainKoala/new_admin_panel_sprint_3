@@ -67,7 +67,13 @@ def create_schema(url: str, name: str, schema: str):
 
 from data_helpers import FilmworkData
 def es_update_movies(film_works: list[FilmworkData]) -> None:
-    line_header = '{{"index": {{"_index": "{}", "_id": "{}"}}}}'
+    query_data = ''
+    line_header = '{{"index": {{"_index": "{}", "_id": "{}"}}}}\n'
+    for fw in film_works:
+        odd = line_header.format(INDEX_NAME, fw.id)
+        even = fw.json(exclude={'id': True, 'genres': True, 'persons': True, 'actors': {'__all__': {'person_role'}}})
+        query_data += f'{odd}{even}\n'
+    logger.debug(query_data)
 
 
 if __name__ == '__main__':
@@ -87,6 +93,7 @@ if __name__ == '__main__':
     with psycopg2.connect(**dsl, cursor_factory=RealDictCursor) as pg_conn:
         pg_extractor = PostgresExtractor(pg_conn, logger)
         movies = pg_extractor.get_movies()
+        es_update_movies(movies)
 
     counter = 1
 
