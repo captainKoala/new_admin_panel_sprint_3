@@ -10,6 +10,7 @@ import requests
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+from data_helpers import FilmworkData
 from pg_extractor import PostgresExtractor
 from settings import Settings
 
@@ -65,15 +66,39 @@ def create_schema(url: str, name: str, schema: str):
     response = requests.put(url+name, data=schema, headers={'Content-Type': 'application/json'})
     logger.debug(response.json())
 
-from data_helpers import FilmworkData
-def es_update_movies(film_works: list[FilmworkData]) -> None:
+
+def es_create_movies(url: str, schema_name: str, film_works: list[FilmworkData]) -> None:
     query_data = ''
     line_header = '{{"index": {{"_index": "{}", "_id": "{}"}}}}\n'
     for fw in film_works:
         odd = line_header.format(INDEX_NAME, fw.id)
         even = fw.json(exclude={'id': True, 'genres': True, 'persons': True, 'actors': {'__all__': {'person_role'}}})
         query_data += f'{odd}{even}\n'
-    logger.debug(query_data)
+    logger.info('\n\nQuery data\n')
+    logger.info(query_data)
+    response = requests.post(
+        url=f'{url}{schema_name}/_bulk?filter_path=items.*.error',
+        data=query_data,
+        headers={'Content-Type': 'application/x-ndjson'},
+    )
+    logger.info(response.json())
+
+
+def es_update_movies(url: str, schema_name: str, film_works: list[FilmworkData]) -> None:
+    query_data = ''
+    line_header = '{{"index": {{"_index": "{}", "_id": "{}"}}}}\n'
+    for fw in film_works:
+        odd = line_header.format(INDEX_NAME, fw.id)
+        even = fw.json(exclude={'id': True, 'genres': True, 'persons': True, 'actors': {'__all__': {'person_role'}}})
+        query_data += f'{odd}{even}\n'
+    logger.info('\n\nQuery data\n')
+    logger.info(query_data)
+    response = requests.post(
+        url=f'{url}/{schema_name}/_bulk?filter_path=items.*.error',
+        data=query_data,
+        headers={'Content-Type': 'application/json'},
+    )
+    logger.info(response.json())
 
 
 if __name__ == '__main__':
@@ -87,16 +112,16 @@ if __name__ == '__main__':
         'host': Settings().postgres_host,
         'port': Settings().postgres_port,
     }
-    # create_schema(f'{ETL_BASE_URL}:{ETL_PORT}/', INDEX_NAME, schema)
+    create_schema(f'{ETL_BASE_URL}:{ETL_PORT}/', INDEX_NAME, schema)
 
     logger.debug('Connect to Postgres')
     with psycopg2.connect(**dsl, cursor_factory=RealDictCursor) as pg_conn:
         pg_extractor = PostgresExtractor(pg_conn, logger)
-        movies = pg_extractor.get_movies()
-        es_update_movies(movies)
+        movies = pg_extractor.get_new_film_works(limit=1)
+        es_create_movies(f'{ETL_BASE_URL}:{ETL_PORT}/', INDEX_NAME, movies)
+        # es_update_movies(f'{ETL_BASE_URL}:{ETL_PORT}/', INDEX_NAME, movies)
 
     counter = 1
-
     while True:
         logger.debug(f'{counter} ...')
         sleep(2)
