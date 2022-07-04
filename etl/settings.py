@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     postgres_password: str
     postgres_host: str
     postgres_port: str
+    logger_name: str = 'etl_service'
 
     class Config:
         env_file = '.env'

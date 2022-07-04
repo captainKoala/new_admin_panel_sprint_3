@@ -4,6 +4,8 @@ volumes:
     name: ${CONTAINER_PREFIX}postgres_data
   es_data:
     name: ${CONTAINER_PREFIX}es
+  etl_data:
+    name: ${CONTAINER_PREFIX}etl
   static_value:
     name: ${CONTAINER_PREFIX}static_value
   media_value:
@@ -54,6 +56,8 @@ services:
   etl:
     build: ./etl
     container_name: ${CONTAINER_PREFIX}etl
+    volumes:
+      - etl_data:/data/
     depends_on:
       - db
       - es

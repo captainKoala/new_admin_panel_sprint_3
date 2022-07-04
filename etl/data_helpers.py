@@ -29,11 +29,11 @@ class FilmworkData(BaseModel):
 
             writers = [p for p in persons if p.person_role == 'writer']
             values['writers_names'] = ', '.join([a.person_name for a in writers])
-            values['writers'] = writers
+            values['writers'] = [{'id': w.person_id, 'name': w.person_name} for w in writers]
 
             actors = [p for p in persons if p.person_role == 'actor']
             values['actors_names'] = ', '.join([a.person_name for a in actors])
-            values['actors'] = actors
+            values['actors'] = [{'id': a.person_id, 'name': a.person_name} for a in actors]
         if 'genres' in values:
             values['genre'] = ', '.join(values.get('genres', []))
         return values
