@@ -1,7 +1,7 @@
 from datetime import datetime
 from dataclasses import dataclass, field
 from uuid import UUID, uuid4
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, root_validator, validator
 
 
 class PersonData(BaseModel):
@@ -15,7 +15,7 @@ class FilmworkData(BaseModel):
     rating: float = Field(alias='imdb_rating', default=0.0)
     genres: list[str]
     title: str
-    description: str
+    description: str | None
     persons: list[PersonData]
 
     @root_validator

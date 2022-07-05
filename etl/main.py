@@ -82,7 +82,6 @@ if __name__ == '__main__':
         offset = 0
         while True:
             new_film_works = pg_extractor.get_modified_film_works(last_date=last_checked, limit=limit, offset=offset)
-            logger.debug('len=', len(new_film_works))
             if not new_film_works:
                 break
             es_create_movies(f'{ETL_BASE_URL}:{ETL_PORT}/', INDEX_NAME, new_film_works)
