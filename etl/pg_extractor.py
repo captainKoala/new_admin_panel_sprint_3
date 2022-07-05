@@ -15,7 +15,6 @@ class PostgresExtractor:
 
     @backoff()
     def get_modified_film_works(self, last_date: datetime, limit: int = 100, offset: int = 0):
-        logger.debug(f'limit={limit}, offset={offset}')
         query = '''
                 SELECT fw.id, fw.title, fw.description, fw.rating, fw.type, fw.created, fw.modified,
                    COALESCE (
@@ -37,11 +36,14 @@ class PostgresExtractor:
                 WHERE fw.modified > %s
                 GROUP BY fw.id
                 ORDER BY fw.modified
-                LIMIT %s
-                OFFSET %s;
+                LIMIT %s OFFSET %s;
                 '''
+        self.logger.debug(f'closed={self.conn.closed}')
         cur = self.conn.cursor()
-        cur.execute(query, (last_date, limit, offset))
+        # cur.execute(query)
+        cur.execute(query, (last_date.isoformat(), limit, offset))
+        self.logger.debug('Query:')
+        self.logger.debug(cur.query)
         res = cur.fetchall()
         films = [FilmworkData(**f) for f in res]
         return films

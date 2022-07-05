@@ -32,6 +32,7 @@ def backoff(start_sleep_time: float = 0.1, factor: int = 2, border_sleep_time: f
                     break
                 except Exception as e:
                     logger.warning(f'An exception occurred. Next attempt in {sleep_time} seconds.\n{e}')
+                    logger.debug(f'Exception:\n{e}')
                     sleep(sleep_time)
                     sleep_time *= factor
                     if sleep_time > border_sleep_time:
