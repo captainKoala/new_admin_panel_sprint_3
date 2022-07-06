@@ -3,20 +3,25 @@ from time import sleep
 
 from logger import logger
 
+from typing import Type
 
-def backoff(start_sleep_time: float = 0.1, factor: int = 2, border_sleep_time: float = 10):
+
+def backoff(no_raise_exceptions: list[Type[BaseException]],
+            start_sleep_time: float = 0.1,
+            factor: int = 2,
+            border_sleep_time: float = 10) -> callable:
     """
-    Функция для повторного выполнения функции через некоторое время, если возникла ошибка.
-    Использует наивный экспоненциальный рост времени повтора (factor) до граничного времени ожидания (border_sleep_time)
+    The decorator to re-execute a function after some time if an exception was raised.
+    It uses a naive exponential increasing of the repeating time.
 
-    Формула:
+    Formula:
         t = start_sleep_time * factor^(n) if t < border_sleep_time
         t = border_sleep_time if t >= border_sleep_time
-    :param start_sleep_time: начальное время повтора
-    :param factor: во сколько раз нужно увеличить время ожидания
-    :param border_sleep_time: граничное время ожидания
-    :param logger: логгер для вывода сообщений
-    :return: результат выполнения функции
+
+    :param no_raise_exceptions: the list of exceptions that will not be raised
+    :param start_sleep_time: the start time of the repeating
+    :param factor: the multiplier to increase the delay time
+    :param border_sleep_time: the max delay time
     """
 
     def func_wrapper(func):
@@ -27,6 +32,8 @@ def backoff(start_sleep_time: float = 0.1, factor: int = 2, border_sleep_time: f
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
+                    if e not in no_raise_exceptions:
+                        raise e
                     logger.warning(f'An exception occurred. Next attempt in {sleep_time} seconds.\n{e}')
                     logger.debug(f'Exception:\n{e}\n{e.args}')
                     sleep(sleep_time)
