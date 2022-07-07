@@ -46,7 +46,6 @@ class State:
     def set_state(self, key: str, value: Any) -> None:
         """Установить состояние для определённого ключа."""
         data = self.storage.retrieve_state()
-        print(key, value, flush=True)
         if isinstance(value, (date, datetime)):
             value = value.isoformat()
         data[key] = value

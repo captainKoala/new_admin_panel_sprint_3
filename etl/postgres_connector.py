@@ -53,7 +53,7 @@ def get_modified_film_works(conn: connection, last_date: datetime, limit: int = 
     """
     query = _get_query_modified_film_works()
     cur = conn.cursor()
-    cur.execute(query, (last_date.isoformat(), last_date.isoformat(), last_date.isoformat(), limit, offset))
+    cur.execute(query, (last_date, last_date, last_date, limit, offset))
     res = cur.fetchall()
     films = [FilmworkData(**f) for f in res]
     return films

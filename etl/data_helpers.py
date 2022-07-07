@@ -1,7 +1,5 @@
-from datetime import datetime
-from dataclasses import dataclass, field
-from uuid import UUID, uuid4
-from pydantic import BaseModel, Field, root_validator, validator
+from uuid import UUID
+from pydantic import BaseModel, Field, root_validator
 
 
 class PersonData(BaseModel):
@@ -37,44 +35,3 @@ class FilmworkData(BaseModel):
         if 'genres' in values:
             values['genre'] = ', '.join(values.get('genres', []))
         return values
-
-# print(f1.json(exclude={'persons': True, 'actors': {'__all__': {'person_role'}}}))
-
-    # creation_date: datetime | None
-    # type: str
-    # created: datetime
-    # modified: datetime
-
-#
-# @dataclass
-# class GenreData:
-#     name: str
-#     description: str
-#     created: str  # ToDo: maybe datetime ???
-#     modified: str  # ToDo: maybe datetime ???
-#     id: uuid.UUID = field(default_factory=uuid.uuid4)
-#
-#
-# @dataclass
-# class GenreFilmworkData:
-#     film_work_id: uuid
-#     genre_id: uuid
-#     created: str  # ToDo: maybe datetime ???
-#     id: uuid.UUID = field(default_factory=uuid.uuid4)
-#
-#
-# @dataclass
-# class PersonFilmworkData:
-#     film_work_id: uuid
-#     person_id: uuid
-#     role: str
-#     created: str  # ToDo: maybe datetime ???
-#     id: uuid.UUID = field(default_factory=uuid.uuid4)
-#
-#
-# @dataclass
-# class PersonData:
-#     full_name: str
-#     created: str  # ToDo: maybe datetime ???
-#     modified: str  # ToDo: maybe datetime ???
-#     id: uuid.UUID = field(default_factory=uuid.uuid4)
