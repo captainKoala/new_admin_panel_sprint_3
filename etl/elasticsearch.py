@@ -16,8 +16,8 @@ def create_index(url: str, name: str, schema: str) -> None:
     :param schema: index schema
     :return: None
     """
-    logger.debug('Create schema...')
-    response = requests.put(url+name, data=schema, headers={'Content-Type': 'application/json'})
+    logger.debug(f'Create index...')
+    response = requests.put(f'{url}{name}/', data=schema, headers={'Content-Type': 'application/json'})
     logger.debug(response.json())
 
 

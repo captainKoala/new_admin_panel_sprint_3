@@ -34,7 +34,7 @@ POSTGRES_DSL = {
 
 
 if __name__ == '__main__':
-    index_name = Settings.es_index_name
+    index_name = Settings().es_index_name
     state = State(JsonFileStorage(STATE_FILE))
 
     if not state.is_state('is_index_created', 1):
