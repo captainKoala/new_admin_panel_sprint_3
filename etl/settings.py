@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     es_index_name: str = 'movies'
     logger_name: str = 'etl_service'
     query_batch_size: int = 100
-    update_checking_frequency_sec: int = 10
+    update_checking_frequency_sec: int = 1
 
     class Config:
         env_file = '.env'

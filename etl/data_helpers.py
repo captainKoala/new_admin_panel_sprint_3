@@ -9,6 +9,9 @@ class PersonData(BaseModel):
 
 
 class FilmworkData(BaseModel):
+    """
+    Helps to transfer data about Film Work from PostgreSQL to ElasticSearch.
+    """
     id: UUID
     imdb_rating: float | None = Field(alias='rating', default=0.0)
     genre: list[str] = Field(alias='genres', default=[])

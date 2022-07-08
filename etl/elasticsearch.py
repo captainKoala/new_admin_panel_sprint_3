@@ -2,7 +2,6 @@ import requests
 
 from data_helpers import FilmworkData
 from logger import logger
-from settings import Settings
 from utils import backoff
 
 
@@ -16,24 +15,27 @@ def create_index(url: str, name: str, schema: str) -> None:
     :param schema: index schema
     :return: None
     """
-    logger.debug(f'Create index...')
+    logger.debug('Create index...')
+    if not url.endswith('/'):
+        url += '/'
     response = requests.put(f'{url}{name}/', data=schema, headers={'Content-Type': 'application/json'})
     logger.debug(response.json())
 
 
 def es_update_records(url: str, index_name: str, film_works: list[FilmworkData]) -> None:
     """
-    Update data in ElasticSearch index.
+    Update Film Work data in ElasticSearch index.
 
     :param url: URL to connect to ES, like 'http://127.0.0.1:9200/'
     :param index_name: index name
-    :param film_works:
-    :return:
+    :param film_works: data to update
+    :return: None
     """
     logger.debug('Update ElasticSearch index')
+    if not url.endswith('/'):
+        url += '/'
     query_data = ''
     line_header = '{{"index": {{"_index": "{}", "_id": "{}"}}}}\n'
-    index_name = Settings().es_index_name
     for fw in film_works:
         odd = line_header.format(index_name, fw.id)
         even = fw.json(exclude={'persons': True, 'actors': {'__all__': {'person_role'}}})
