@@ -1,0 +1,239 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-08 16:27+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\movies\admin.py:38
+msgid "FilmWorkAdmin.get_genres"
+msgstr "Genres"
+
+#: .\movies\apps.py:8
+msgid "MoviesConfig.verbose_name"
+msgstr "Movies"
+
+#: .\movies\mixins.py:9
+msgid "TimeStampedMixin.created"
+msgstr "Creation Date and Time"
+
+#: .\movies\mixins.py:10
+msgid "TimeStampedMixin.created.help_text"
+msgstr "Creation Date and Time"
+
+#: .\movies\mixins.py:14
+msgid "TimeStampedMixin.modified"
+msgstr "Modifying Date and Time"
+
+#: .\movies\mixins.py:15
+msgid "TimeStampedMixin.modified.help_text"
+msgstr "Modifying Date and Time"
+
+#: .\movies\models.py:11
+msgid "Genre.title"
+msgstr "Title"
+
+#: .\movies\models.py:12
+msgid "Genre.title.help_text"
+msgstr "Enter the genre title"
+
+#: .\movies\models.py:16
+msgid "Genre.description"
+msgstr "Enter the genre description"
+
+#: .\movies\models.py:17
+msgid "Genre.description.help_text"
+msgstr "Enter the genre description"
+
+#: .\movies\models.py:30
+msgid "Genre.verbose_name"
+msgstr "Genre"
+
+#: .\movies\models.py:31
+msgid "Genre.verbose_name_plural"
+msgstr "Genres"
+
+#: .\movies\models.py:41
+msgid "Person.full_name"
+msgstr "Full Name"
+
+#: .\movies\models.py:42
+msgid "Person.full_name.help_text"
+msgstr "Enter the person full name"
+
+#: .\movies\models.py:54
+msgid "Person.verbose_name"
+msgstr "Person"
+
+#: .\movies\models.py:55
+msgid "Person.verbose_name_plural"
+msgstr "Persons"
+
+#: .\movies\models.py:66
+msgid "FilmWorkTypes.MOVIE"
+msgstr "Movie"
+
+#: .\movies\models.py:67
+msgid "FilmWorkTypes.Tv_SHOW"
+msgstr "TV Show"
+
+#: .\movies\models.py:70
+msgid "Filmwork.title"
+msgstr "Title"
+
+#: .\movies\models.py:71
+msgid "Filmwork.title.help_text"
+msgstr "Enter the film-work title"
+
+#: .\movies\models.py:75
+msgid "Filmwork.description"
+msgstr "Description"
+
+#: .\movies\models.py:76
+msgid "Filmwork.description.help_text"
+msgstr "Enter the filmwork description"
+
+#: .\movies\models.py:81
+msgid "Filmwork.creation_date"
+msgstr "Creation Date"
+
+#: .\movies\models.py:82
+msgid "Filmwork.creation_date.help_text"
+msgstr "Enter the film-work creation date"
+
+#: .\movies\models.py:87
+msgid "Filmwork.rating"
+msgstr "Rating"
+
+#: .\movies\models.py:88
+msgid "Filmwork.rating.help_text"
+msgstr "The film-work rating from 0 to 100"
+
+#: .\movies\models.py:97
+msgid "Filmwork.type"
+msgstr "Type"
+
+#: .\movies\models.py:98
+msgid "Filmwork.type.help_text"
+msgstr "Choose the film-work type"
+
+#: .\movies\models.py:104
+msgid "Filmwork.genres"
+msgstr "Genres"
+
+#: .\movies\models.py:105
+msgid "Filmwork.genres.help_text"
+msgstr "Choose the film-work genres"
+
+#: .\movies\models.py:110
+msgid "Filmwork.persons"
+msgstr "Persons"
+
+#: .\movies\models.py:111
+msgid "Filmwork.persons.help_text"
+msgstr "Choose the film-work persons"
+
+#: .\movies\models.py:124
+msgid "FilmWork.verbose_name"
+msgstr "Film-work"
+
+#: .\movies\models.py:125
+msgid "FilmWork.verbose_name_plural"
+msgstr "Film-works"
+
+#: .\movies\models.py:138
+msgid "GenreFilmWork.film_work"
+msgstr "Film-work"
+
+#: .\movies\models.py:139
+msgid "GenreFilmWork.film_work.help_text"
+msgstr "Film-work"
+
+#: .\movies\models.py:144
+msgid "GenreFilmWork.genre"
+msgstr "Genre"
+
+#: .\movies\models.py:145
+msgid "GenreFilmWork.genre.help_text"
+msgstr "Choose the film-work genres"
+
+#: .\movies\models.py:150
+msgid "GenreFilmWork.created"
+msgstr "Created at"
+
+#: .\movies\models.py:151
+msgid "GenreFilmWork.created.help_text"
+msgstr "Created at"
+
+#: .\movies\models.py:157
+msgid "GenreFilmWork.verbose_name"
+msgstr "Film-work genre"
+
+#: .\movies\models.py:158
+msgid "GenreFilmWork.verbose_name_plural"
+msgstr "Film-work genres"
+
+#: .\movies\models.py:175
+msgid "RoleChoices.ACTOR"
+msgstr "Actor"
+
+#: .\movies\models.py:176
+msgid "RoleChoices.DIRECTOR"
+msgstr "Director"
+
+#: .\movies\models.py:177
+msgid "RoleChoices.WRITER"
+msgstr "Writer"
+
+#: .\movies\models.py:180
+msgid "PersonFilmWork.film_work"
+msgstr "Film-work"
+
+#: .\movies\models.py:181
+msgid "PersonFilmWork.film_work.help_text"
+msgstr "Film-work"
+
+#: .\movies\models.py:186
+msgid "PersonFilmWork.person"
+msgstr "Person"
+
+#: .\movies\models.py:187
+msgid "PersonFilmWork.person.help_text"
+msgstr "Choose the film-work persons"
+
+#: .\movies\models.py:192
+msgid "PersonFilmWork.role"
+msgstr "Role"
+
+#: .\movies\models.py:193
+msgid "PersonFilmWork.role.help_text"
+msgstr "Enter the person role"
+
+#: .\movies\models.py:199
+msgid "PersonFilmWork.created"
+msgstr "Created at"
+
+#: .\movies\models.py:200
+msgid "PersonFilmWork.created.help_text"
+msgstr "Created at"
+
+#: .\movies\models.py:206
+msgid "PersonFilmWork.verbose_name"
+msgstr "Film-work person"
+
+#: .\movies\models.py:207
+msgid "PersonFilmWork.verbose_name_plural"
+msgstr "Film-work persons"
