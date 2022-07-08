@@ -36,7 +36,7 @@ def es_update_records(url: str, index_name: str, film_works: list[FilmworkData])
     index_name = Settings().es_index_name
     for fw in film_works:
         odd = line_header.format(index_name, fw.id)
-        even = fw.json(exclude={'id': True, 'persons': True, 'actors': {'__all__': {'person_role'}}})
+        even = fw.json(exclude={'persons': True, 'actors': {'__all__': {'person_role'}}})
         query_data += f'{odd}{even}\n'
     requests.post(
         url=f'{url}{index_name}/_bulk?filter_path=items.*.error',
