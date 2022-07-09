@@ -1,11 +1,12 @@
 import requests
+from requests.exceptions import ConnectionError
 
 from data_helpers import FilmworkData
 from logger import logger
 from utils import backoff
 
 
-@backoff(no_raise_exceptions=[Exception])
+@backoff(no_raise_exceptions=[ConnectionError])
 def create_index(url: str, name: str, schema: str) -> None:
     """
     Create ElasticSearch index.
@@ -22,6 +23,7 @@ def create_index(url: str, name: str, schema: str) -> None:
     logger.debug(response.json())
 
 
+@backoff(no_raise_exceptions=[ConnectionError])
 def es_update_records(url: str, index_name: str, film_works: list[FilmworkData]) -> None:
     """
     Update Film Work data in ElasticSearch index.
