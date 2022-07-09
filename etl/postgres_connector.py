@@ -1,12 +1,13 @@
 from datetime import datetime
 
+from psycopg2 import OperationalError
 from psycopg2.extensions import connection
 
 from data_helpers import FilmworkData
 from utils import backoff
 
 
-def _get_query_modified_film_works() -> str:
+def get_query_modified_film_works() -> str:
     """Returns a query to get data to update the ElasticSearch index (film work, genre or person update."""
     return '''
         SELECT
@@ -40,7 +41,7 @@ def _get_query_modified_film_works() -> str:
         '''
 
 
-@backoff(no_raise_exceptions=[Exception])
+@backoff(no_raise_exceptions=[OperationalError])
 def get_modified_film_works(conn: connection, last_date: datetime, limit: int = 100, offset: int = 0) -> list[FilmworkData]:
     """
     Returns the data that should be updated in the ElasticSearch index.
@@ -51,7 +52,7 @@ def get_modified_film_works(conn: connection, last_date: datetime, limit: int = 
     :param offset: the OFFSET SQL-parameter
     :returns films: the list of FilmWorkData
     """
-    query = _get_query_modified_film_works()
+    query = get_query_modified_film_works()
     cur = conn.cursor()
     cur.execute(query, (last_date, last_date, last_date, limit, offset))
     res = cur.fetchall()

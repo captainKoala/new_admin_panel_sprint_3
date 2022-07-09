@@ -1,7 +1,8 @@
 from functools import wraps
+from logging import Logger
 from time import sleep
 
-from logger import logger
+from logger import logger as default_logger
 
 from typing import Type
 
@@ -9,7 +10,8 @@ from typing import Type
 def backoff(no_raise_exceptions: list[Type[BaseException]],
             start_sleep_time: float = 0.1,
             factor: int = 2,
-            border_sleep_time: float = 10) -> callable:
+            border_sleep_time: float = 10,
+            logger: Logger = default_logger) -> callable:
     """
     The decorator to re-execute a function after some time if an exception was raised.
     It uses a naive exponential increasing of the repeating time.
@@ -22,6 +24,7 @@ def backoff(no_raise_exceptions: list[Type[BaseException]],
     :param start_sleep_time: the start time of the repeating
     :param factor: the multiplier to increase the delay time
     :param border_sleep_time: the max delay time
+    :param logger: custom logger
     """
 
     def func_wrapper(func):
@@ -30,7 +33,8 @@ def backoff(no_raise_exceptions: list[Type[BaseException]],
             sleep_time = start_sleep_time if start_sleep_time < border_sleep_time else border_sleep_time
             while True:
                 try:
-                    return func(*args, **kwargs)
+                    res = func(*args, **kwargs)
+                    return res
                 except Exception as e:
                     if e not in no_raise_exceptions:
                         raise e

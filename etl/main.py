@@ -1,6 +1,4 @@
-import os
-from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime
 from time import sleep
 
 import psycopg2
@@ -13,24 +11,7 @@ from settings import Settings
 from state import JsonFileStorage, State
 
 
-BASE_DIR = Path(__file__).resolve().parent
-
-
-ETL_SCHEMA_FILE = os.path.join(BASE_DIR, 'es_schema.json')
 STATE_FILE = '/data/state.txt'
-
-ES_URL = f'http://{Settings().es_host}:{Settings().es_port}/'
-QUERY_BATCH_SIZE = Settings().query_batch_size
-UPDATE_CHECKING_FREQUENCY_SEC = Settings().update_checking_frequency_sec
-INITIAL_CHECKED_DATETIME = datetime(2000, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc)
-
-POSTGRES_DSL = {
-    'dbname': Settings().postgres_db,
-    'user': Settings().postgres_user,
-    'password': Settings().postgres_password,
-    'host': Settings().postgres_host,
-    'port': Settings().postgres_port,
-}
 
 
 if __name__ == '__main__':
@@ -38,21 +19,28 @@ if __name__ == '__main__':
     state = State(JsonFileStorage(STATE_FILE))
 
     if not state.is_state('is_index_created', 1):
-        with open(ETL_SCHEMA_FILE) as f:
+        with open(Settings().es_schema_file) as f:
             schema = f.read()
-        create_index(ES_URL, index_name, schema)
+        create_index(Settings().es_url, index_name, schema)
         state.set_state('is_index_created', 1)
 
     while True:
         logger.debug('Connect to Postgres DB')
-        with psycopg2.connect(**POSTGRES_DSL, cursor_factory=RealDictCursor) as pg_conn:
+        dsl = {
+            'dbname': Settings().postgres_db,
+            'user': Settings().postgres_user,
+            'password': Settings().postgres_password,
+            'host': Settings().postgres_host,
+            'port': Settings().postgres_port,
+        }
+        with psycopg2.connect(**dsl, cursor_factory=RealDictCursor) as pg_conn:
             last_checked = state.get_state('movies_create_last_checked_date')
             if not last_checked:
-                last_checked = INITIAL_CHECKED_DATETIME
+                last_checked = datetime.min
             logger.debug(f'Last checked: {last_checked}')
 
             current_time = datetime.now()
-            limit = QUERY_BATCH_SIZE
+            limit = Settings().query_batch_size
             offset = 0
             while True:
                 logger.debug('Get new data batch')
@@ -65,9 +53,9 @@ if __name__ == '__main__':
                     break
                 logger.debug(f'{len(new_film_works)} records need to be updated')
 
-                es_update_records(ES_URL, index_name, new_film_works)
-                offset += QUERY_BATCH_SIZE
+                es_update_records(Settings().es_url, index_name, new_film_works)
+                offset += Settings().query_batch_size
             state.set_state('movies_create_last_checked_date', current_time)
 
-        logger.debug(f'Next check in {UPDATE_CHECKING_FREQUENCY_SEC} seconds\n')
-        sleep(UPDATE_CHECKING_FREQUENCY_SEC)
+        logger.debug(f'Next check in {Settings().update_checking_frequency_sec} seconds\n')
+        sleep(Settings().update_checking_frequency_sec)
